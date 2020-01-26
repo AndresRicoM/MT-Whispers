@@ -1,0 +1,27 @@
+This data was collected as a first test of the sensor system mounted on skis in Killington 
+Resort, Vermont USA. 
+
+RM = Right Module -> Fast module collects 9 axis IMU, temperature, pressure, humidity and 
+			piezo sensors.   
+LM = Left Module -> Slow module collects GPS coordinates and Capacitive Ski Sensor readings.
+
+Each folder contains around 3.3 hours of clean data collection. 
+
+Time descriptors for data set are as follows:
+
+RM
+1.csv - Start: 2628835  End: 5705247 - Duration: 3,076,412 - 51.27 Mins
+2.csv - Start: 3505789  End: 5804376 - Duration: 2,298,587 - 38.30 Mins
+3.csv - Start: 1583654  End: 3499960 - Duration: 1,916,306 - 31.93 Mins
+4.csv - Start: 904453    End: 2626603 - Duration: 1,722,150 - 38.70 Mins
+5.csv - Start: 5707919  End: 7076076 - Duration: 1,368,157 - 22.80 Mins
+6.csv - Start: 7079158  End: 8066858 - Duration: 987,700    - 16.46 Mins
+
+LM
+1.csv - Start: 2498489 End: 5537561 - Duration: 3,039,072 - 50.65 Mins
+2.csv - Start: 3394427 End: 5693333 - Duration: 2,298,906 - 38.31 Mins
+3.csv - Start: 1436427 End: 3338294 - Duration: 1,901,867 - 31.69 Mins
+4.csv - Start: 816019   End: 2494739 - Duration: 1,678,720 - 27.97 Mins
+5.csv - Start: 5541441 End: 6948492 - Duration: 1,407,051 - 23.45 Mins
+6.csv - Start: 6954793 End: 7836437 - Duration: 881,644    - 14.69 Mins
+
