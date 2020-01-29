@@ -11,8 +11,8 @@ print('Validation Starting...')
 rm_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/raw/Killington_250120/RM'
 lm_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/raw/Killington_250120/LM'
 
-rm_file = '/1.csv'
-lm_file = '/1.csv'
+rm_file = '/4.csv'
+lm_file = '/4.csv'
 
 print('Importing Files')
 
@@ -33,7 +33,6 @@ print('Size of LM is: ' , lm.size)
 print('Total time of collection: ', (lm[lm.shape[0] - 1,0] - lm[0,0]) / 60000)
 print('Frequency of collection: ', lm.shape[0] / ((lm[lm.shape[0] - 1,0]) / 1000))
 
-"""
 print('Reviewing piezo sensor values...')
 
 values = 0
@@ -49,26 +48,53 @@ print('Generating Data Visualization')
 
 plt.style.use('dark_background')
 
-gs = gridspec.GridSpec(5,1)
+gs = gridspec.GridSpec(2,1)
 fig = plt.figure()
 dot_size = 3
 
 
-for i in range (6):
-    if i > 0:
-        ax = fig.add_subplot(gs[i - 1])
-        ax.plot(rm[:,0],rm[:,i])
-        ax.set_ylabel(r'Piezo', size =16)
+#for i in range (6):
+#    if i > 0:
+#        ax = fig.add_subplot(gs[i - 1])
+#        ax.plot(rm[:,0],rm[:,i])
+#        ax.set_ylabel(r'Piezo', size =16)
 
-print("Showing Piezo Readings...")
+"""
+sensor_num = [1,2,3,4]
+
+fig = plt.figure()
+ax = plt.axes(projection='3d')
+ax.set_xlabel('Piezo')
+ax.set_ylabel('Time')
+ax.set_zlabel('Sensor Number')
+img = ax.scatter3D(rm[:,0], X[:, 1], X[:, ])
+plt.show()
+"""
+
+ax = fig.add_subplot(gs[0])
+ax.plot(rm[:,0],rm[:,5], 'y')
+ax.plot(rm[:,0],rm[:,2], 'g')
+ax.plot(rm[:,0],rm[:,3], 'b')
+ax.plot(rm[:,0],rm[:,1],'r')
+
+ax.set_ylabel(r'Piezo Array', size =16)
+
+ax = fig.add_subplot(gs[1])
+ax.plot(rm[:,0],rm[:,7],'r')
+ax.plot(rm[:,0],rm[:,8], 'g')
+ax.plot(rm[:,0],rm[:,9], 'b')
+#ax.plot(rm[:,0],rm[:,23], 'y')
+ax.set_ylabel(r'Pressure', size =16)
+
+print("Showing Piezo and Accelerometer Readings...")
 
 plt.show()
 
 print("Showing Capacitive Readings...")
 
-plt.plot(lm[:,0],lm[:,5])
+plt.plot(rm[:,0],rm[:,23])
 plt.show()
 
-"""
+#"""
 
 print("Data sets are valid!")
