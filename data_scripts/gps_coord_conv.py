@@ -1,4 +1,3 @@
-#Script for converting GPS coordinates for MapBox use.
 #Script for processing incoming Bike Data for MapBox Analisis
 #Creates a New File in Processed Data Folder
 
@@ -8,21 +7,37 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import os
+import math
 
-data_path = '/home/AndresRico/Desktop/HackBike/raw_data'
+input_data_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/raw/Killington_250120/LM/'
+output_data_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/raw/Killington_250120/processed_LM/'
+script_path = '/Users/AndresRico/Desktop/MT_Whispers/data_scripts/'
 
-#data_labels = ['Time', 'Battery Cell Temperature (C)', 'Battery Voltage (mV)', 'Battery Current Value (mA)', 'Battery Percentage (%)', 'Remaining Distance (0.1km)',
-#                'Remaining Time (0.1min)', 'Torque (kgf)', 'Crank Sensor Rotation State', 'Crank Sensor RPM', 'Battery Voltage Sensor Value (mV)', 'Motor Current Sensor Value (mA)', 'Motor Temperature Sensor Value (C)',
-#                'Motor Duty', 'Motor RPM', 'Motor Speed (km/h)', 'Motor Encoder Counter', 'Speed Sensor (km/h)', 'Current Mode', 'X Accel', 'Y Accel', 'Z Accel', 'Environmental Temperature', 'Light', 'Humidity', 'Proximity', 'Pressure', 'Altitude', 'Dew Point']
+data_labels = ['millis', 'latitude', 'coord1', 'longitude', 'coord2', 'capacitive']
 
-for filename in os.listdir(data_path):
-    #current_file = open(data_path + '/' + filename, "r")
-    current_data = np.genfromtxt(data_path + '/' + filename, delimiter = ',',  dtype='str')
-    #print current_data[0,1]
+for filename in os.listdir(input_data_path):
+
+    current_data = np.genfromtxt(input_data_path + filename, delimiter = ',') #,  dtype='str')
+    #np.array2string(current_data)
+    print current_data[0,1]
 
     for rows in range(current_data.shape[0]):
 
-        if (len(current_data[rows,1]) > 10):
+        lat = current_data[rows,1]
+        lat_deg = math.floor(lat)
+        lat_min = ((lat - lat_deg) * 100) / 60
+        dd_lat = lat_deg + lat_min
+        #print(dd_lat)
+
+        lon = current_data[rows,3]
+        lon_deg = math.floor(lon)
+        lon_min = ((lon - lon_deg) * 100) / 60
+        dd_lon = - (lon_deg + lon_min)
+        #print(dd_lon)
+
+        """
+
+        if (len(current_data[rows,1]) > 7):
             #print len(current_data[55,1])
             lat = current_data[rows,1]
             lat_deg = float(lat[1:3])
@@ -33,7 +48,9 @@ for filename in os.listdir(data_path):
         else:
             dd_lat = 0
 
-        if (len(current_data[rows,2]) > 10):
+
+
+        if (len(current_data[rows,3]) > 7):
             #print len(current_data[60,2])
             lon = current_data[rows,2]
             lon_deg = float(lon[2:5])
@@ -44,12 +61,13 @@ for filename in os.listdir(data_path):
         else:
             dd_lon = 0
 
+        """
+
         current_data[rows,1] = dd_lat
-        current_data[rows,2] = dd_lon
+        current_data[rows,3] = dd_lon
 
     current_data = np.vstack((data_labels, current_data)) #Add data labels to set for referencing and plotting.
 
 
-        #print dd_lat , dd_lon
 
-    np.savetxt('/home/aricom/Desktop/HackBike/processed_data/' + filename , current_data, delimiter = ',', fmt = '%s')
+    np.savetxt(output_data_path + filename , current_data, delimiter = ',', fmt = '%s')
