@@ -9,7 +9,7 @@ import matplotlib.gridspec as gridspec
 import os
 import math
 
-input_data_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/raw/Killington_250120/LM/'
+input_data_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/raw/Killington_250120/LM/combined/'
 output_data_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/raw/Killington_250120/processed_LM/'
 script_path = '/Users/AndresRico/Desktop/MT_Whispers/data_scripts/'
 
@@ -17,19 +17,19 @@ data_labels = ['millis', 'latitude', 'coord1', 'longitude', 'coord2', 'capacitiv
 
 for filename in os.listdir(input_data_path):
 
-    current_data = np.genfromtxt(input_data_path + filename, delimiter = ',') #,  dtype='str')
+    current_data = np.genfromtxt(input_data_path + filename, delimiter = ',',  invalid_raise=False) #,  dtype='str')
     #np.array2string(current_data)
-    print current_data[0,1]
+    print (current_data[0,1])
 
     for rows in range(current_data.shape[0]):
 
-        lat = current_data[rows,1]
+        lat = current_data[rows,1] * .01
         lat_deg = math.floor(lat)
         lat_min = ((lat - lat_deg) * 100) / 60
         dd_lat = lat_deg + lat_min
         #print(dd_lat)
 
-        lon = current_data[rows,3]
+        lon = current_data[rows,3] * .01
         lon_deg = math.floor(lon)
         lon_min = ((lon - lon_deg) * 100) / 60
         dd_lon = - (lon_deg + lon_min)
