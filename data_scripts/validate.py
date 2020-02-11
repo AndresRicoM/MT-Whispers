@@ -11,8 +11,8 @@ print('Validation Starting...')
 rm_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/raw/Killington_250120/RM'
 lm_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/raw/Killington_250120/LM'
 
-rm_file = '/4.csv'
-lm_file = '/4.csv'
+rm_file = '/3.csv'
+lm_file = '/3.csv'
 
 print('Importing Files')
 
