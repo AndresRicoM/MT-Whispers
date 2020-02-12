@@ -1,10 +1,11 @@
 import numpy as np
-import matplotlib
-import matplotlib.pyplot as plt
-import seaborn as sns; sns.set()  # for plot styling
-from matplotlib import gridspec
+#import matplotlib
+#import matplotlib.pyplot as plt
+#import seaborn as sns; sns.set()  # for plot styling
+#from matplotlib import gridspec
 import math
 from progressbar import printProgressBar
+from interpolation import interpolate
 
 output_data = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/processed/merged/killington/'
 
@@ -28,8 +29,8 @@ rm = np.append(rm, rm_flag, axis=1)
 lm_flag = np.zeros((lm.shape[0],1)) #Add Flag Columns to LM
 lm = np.append(lm, lm_flag, axis=1)
 
-#rm = rm[0:10,:]
-#lm = lm[0:10,:]
+rm = rm[0:5,:]
+lm = lm[0:5,:]
 
 data_labels = ['time', 'p1', 'p2', 'p3', 'p4', 'p5', 'termite', 'ax', 'ay', 'az', 'rx', 'ry', 'rz', 'roll', 'pitch', 'yaw',
                 'q1', 'q2', 'q3', 'q4' ,'calibration', 'temperature', 'humidity', 'pressure', 'flag_rm','lat', 'lacoord',
@@ -55,6 +56,7 @@ print( )
 print('Fixing empty GPS and Capacitance...')
 printProgressBar(0, fast_data.shape[0], prefix = 'Filling in missing GPS and Capacitance...', suffix = 'Complete', length = 20)
 
+"""
 for rows in range(0,fast_data.shape[0]):
 
     lat = fast_data[rows,-6] * .01 #Converts type of GPS used.
@@ -70,9 +72,36 @@ for rows in range(0,fast_data.shape[0]):
 
     fast_data[rows,-6] = dd_lat
     fast_data[rows,-4] = dd_lon
+"""
 
+for rows in range(0,fast_data.shape[0]):
+
+    interpolated = False
+    spaces = 0
     if fast_data[rows,-4] == 0:
-        fast_data[rows,25:] = fast_data[rows-1,25:]
+        spaces = spaces + 1
+        blank = False
+        while not blank:
+            if fast_data[rows + spaces, -4] == 0:
+                spaces = spaces + 1
+            else:
+                blank = True
+                interpolated = True
+
+    if interpolated:
+
+        interpolator_lat = np.zeros((spaces,1))
+        interpolator_lon = np.zeros((spaces,1))
+        interpolator_lat = interpolate(fast_data[rows - 1, -6], fast_data[rows + spaces, -6], spaces)
+        interpolator_lon = interpolate(fast_data[rows - 1, -4], fast_data[rows + spaces, -4], spaces)
+
+        interpolated = False
+        for coords in range(0,interpolator_lat.shape[0]):
+            fast_data[rows + coords,25:] = fast_data[rows-1,25:]
+            fast_data[rows + coords, -6] = interpolator_lat[coords, 0]
+        for coords in range(0,interpolator_lon.shape[0]):
+            fast_data[rows + coords,25:] = fast_data[rows-1,25:]
+            fast_data[rows + coords, -4] = interpolator_lon[coords, 0]
 
     fast_data[rows,-3] = 4 #West
     fast_data[rows,-5] = 1 #North
@@ -82,6 +111,6 @@ for rows in range(0,fast_data.shape[0]):
 print('Saving file...')
 
 fast_data = np.vstack((data_labels, fast_data)) #Add data labels to set for referencing and plotting.
-np.savetxt(output_data + 'ski_merged_3.csv' , fast_data, delimiter = ',', fmt = '%s')
+np.savetxt(output_data + 'test.csv' , fast_data, delimiter = ',', fmt = '%s')
 
 print('Finished!')
