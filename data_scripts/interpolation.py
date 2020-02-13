@@ -7,10 +7,16 @@ def interpolate(first, last, spaces): #Takes as argument first number, last numb
     delta = abs(last - first) / (spaces + 1)
     if first < last or first == last:
         for rows in range(0,result.shape[0]):
-            result[rows,0] = first + ((rows + 1) * delta)
+            if rows == 0:
+                result[rows, 0] = first
+            elif rows == result.shape[0] - 1:
+                result[rows, 0] = last
+            else:
+                result[rows,0] = first + ((rows + 1) * delta)
         return result
     if first > last:
         for rows in range(0,result.shape[0]):
             result[rows,0] = first - ((rows + 1) * delta)
         return result
-#print(interpolate(-40,-80,3))
+
+#print(interpolate(4336.4531,4336.4536,8))
