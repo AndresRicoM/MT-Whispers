@@ -21,6 +21,7 @@ for filename in os.listdir(lm_path):
 
     if filename != '.DS_Store':
 
+        print('Beginning to process file: ', filename)
         rm = np.genfromtxt(rm_path + filename, delimiter = ',', usecols=np.arange(0,24), invalid_raise=False)
         lm = np.genfromtxt(lm_path + filename, delimiter = ',')
 
@@ -55,9 +56,6 @@ for filename in os.listdir(lm_path):
             #print(fast_data[np.argmin(test_array),:])
             printProgressBar(rows, lm.shape[0], prefix = 'Looking for closest GPS stamps...', suffix = 'Complete', length = 20)
         #print(fast_data)
-        np.savetxt(output_data + 'pre.csv' , fast_data, delimiter = ',', fmt = '%s')
-
-        np.savetxt(output_data + 'pre.csv' , fast_data, delimiter = ',', fmt = '%s')
 
         print('Adding LM...')
         printProgressBar(0, fast_data.shape[0], prefix = 'Filling in LM...', suffix = 'Complete', length = 20)
@@ -66,6 +64,7 @@ for filename in os.listdir(lm_path):
                 fast_data[rows,25:32] = fast_data[rows-1,-11:-4]
             printProgressBar(rows, fast_data.shape[0], prefix = 'Filling in zeros...', suffix = 'Complete', length = 20)
 
+        """
         print('Interpolating Latitude...')
         printProgressBar(0, fast_data.shape[0], prefix = 'Interpolating Latitude...', suffix = 'Complete', length = 20)
         to_check = 0
@@ -154,6 +153,14 @@ for filename in os.listdir(lm_path):
                     to_check = to_check + 1
 
             printProgressBar(rows, fast_data.shape[0], prefix = 'Interpolating Longitude...', suffix = 'Complete', length = 20)
+
+        print('Rounding decimals...')
+        printProgressBar(0, fast_data.shape[0], prefix = 'Rounding...', suffix = 'Complete', length = 20)
+        for rows in range(0, fast_data.shape[0]):
+            fast_data[rows, -11] = round(fast_data[rows, -11], 4)
+            fast_data[rows, -9] = round(fast_data[rows, -9], 4)
+            printProgressBar(rows, fast_data.shape[0], prefix = 'Rounding...', suffix = 'Complete', length = 20)
+        """
 
         """
         for rows in range(0, fast_data.shape[0]): #Interpolates latitudes
