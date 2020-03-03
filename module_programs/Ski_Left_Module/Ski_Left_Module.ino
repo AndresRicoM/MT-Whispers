@@ -22,7 +22,7 @@
 #include <SPI.h>
 #include <SD.h>
 
-#include <nRF24L01.h>
+//#include <nRF24L01.h>
 #include <RF24.h>
 
 #include <Adafruit_GPS.h>
@@ -50,8 +50,10 @@ uint32_t timer = millis(); //Used for GPS Control.
 
 bool active_recording = false;
 bool active_pin = false;
+String flag_moment = "0";
 
 int buttonPin = 5;
+int mark_count = 0;
 
 //bool collecting = false; 
 
@@ -64,7 +66,7 @@ String lat, lon;
 
 String filename;
 
-CapacitiveSensor   cs_4_2 = CapacitiveSensor(11,12);
+CapacitiveSensor   cs_4_2 = CapacitiveSensor(11,13);
 
 void setup() {
 
@@ -101,12 +103,11 @@ void setup() {
 
   Serial.println("Initializing Radio Communication...");
   radio.begin();                  //Starting the Wireless communication Radio. 
-  radio.openWritingPipe(addresses[1]); //Setting the address where we will send the data
-  radio.openReadingPipe(1, addresses[0]);  //Setting the address for receiving data
-  radio.setPALevel(RF24_PA_MAX);  //You can set it as minimum or maximum depending on the distance between the transmitter and receiver.
+  radio.openWritingPipe(addresses[0]); //Setting the address where we will send the data
+  radio.openReadingPipe(1, addresses[1]);  //Setting the address for receiving data
+  radio.setPALevel(RF24_PA_MIN);  //You can set it as minimum or maximum depending on the distance between the transmitter and receiver.
   radio.stopListening();
   Serial.println("Radio Initilized!");
-
 
   delay(1000);
   send_rf_cmd("RR");
@@ -178,11 +179,6 @@ void loop() {
     Serial.println(file_name);
 
     myFile = SD.open(file_name, FILE_WRITE);
-  
-    /*delay(200);
-    send_rf_cmd("RR");
-    delay(100);// Send confirmation Message.
-    send_rf_cmd("LR");*/
     
     //radio.stopListening();
     Serial.println("Received file name!");
@@ -201,7 +197,7 @@ void loop() {
     
     //Serial.println("I am here");
     char c = GPS.read();
-    
+    //Serial.println(c);
     if (GPS.newNMEAreceived()) {
   
       if (!GPS.parse(GPS.lastNMEA()));
@@ -217,25 +213,37 @@ void loop() {
 
   
       if (GPS.fix) {
-
+        //Serial.println("I have fix");
         strip.setPixelColor(0,0,255,0);
         strip.show();
  
         long start = millis();
         long total1 =  cs_4_2.capacitiveSensor(30);
+
+        //Serial.println(total1);
         
         latitude = (GPS.latitude);
         longitude = (GPS.longitude);
         lat = GPS.lat;
         lon = GPS.lon;
 
+        if (mark_count > 10) {
+          flag_moment = "0";
+        }
+        
+        if (flag_moment == "1") {
+          mark_count = mark_count + 1;
+        }
+
         Serial.print(millis()); Serial.print(",");
         Serial.print(latitude, 4); Serial.print(",");
         Serial.print(lat); Serial.print(",");
         Serial.print(longitude, 4); Serial.print(",");
         Serial.print(lon); Serial.print(",");
-        Serial.println (total1);
+        Serial.print (total1); Serial.print(",");
+        Serial.println(flag_moment);
 
+        
         myFile = SD.open(file_name, FILE_WRITE);
 
         myFile.print(millis()); myFile.print(",");
@@ -243,7 +251,8 @@ void loop() {
         myFile.print(lat); myFile.print(",");
         myFile.print(longitude, 4); myFile.print(",");
         myFile.print(lon); myFile.print(",");
-        myFile.println (total1);
+        myFile.print (total1); myFile.print(",");
+        myFile.println (flag_moment);
 
         myFile.close();
 
@@ -321,9 +330,6 @@ void check_radio_activation() {
     Serial.println(incoming);
     delay(200);
     
-    /*send_rf_cmd("RR");
-    delay(100);
-    send_rf_cmd("LR");*/
     
     if (incoming[0] == 'B' && incoming[1] == 'R') {
       
@@ -337,5 +343,9 @@ void check_radio_activation() {
       Serial.println("Recording Has Been Deactivated");
     }
 
+    if (incoming[0] == 'F' && incoming[1] == 'M') {
+      mark_count = 0;
+      flag_moment = "1";
+    }
   } 
 }

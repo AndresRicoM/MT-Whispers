@@ -8,7 +8,7 @@
 ╚══════╝╚═╝  ╚═╝╚═╝     ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝╚══════╝╚═╝     ╚══════╝╚═╝  ╚═╝╚══════╝
                                                                                     
   Code for right ski data system. The system is based on a Teensy 3.2 Board and a terMITE
-  This module collects data from:
+  This module coññllects data from:
   - 9 axis IMU
   - Pressure Sensor
   - Temperature Sensor
@@ -90,17 +90,17 @@ void setup() {
   Serial.println("Initializing Radio Communication...");
 
   radio.begin();                  //Starting the Wireless communication
-  radio.openWritingPipe(addresses[1]); //Setting the address where we will send the data
-  radio.openReadingPipe(1, addresses[0]);  //Setting the address for receiving data
-  radio.setPALevel(RF24_PA_MAX);  //You can set it as minimum or maximum depending on the distance between the transmitter and receiver.
+  radio.openWritingPipe(addresses[0]); //Setting the address where we will send the data
+  radio.openReadingPipe(1, addresses[1]);  //Setting the address for receiving data
+  radio.setPALevel(RF24_PA_MIN);  //You can set it as minimum or maximum depending on the distance between the transmitter and receiver.
   radio.stopListening();
   Serial.println("Radio Initialized!");
 
-  /*delay(1000);
+  delay(1000);
   send_rf_cmd("RR");
   delay(200);
   send_rf_cmd("LR");
-  delay(500);*/
+  delay(500);
 
   for (int i = 0; i < 5; i++) { //Blink in white to show success. 
     
@@ -114,13 +114,14 @@ void setup() {
     }
     
   Serial.println("Calibrating Gyro...");
-  delay(60000); //Wait for calibration of Gyro. 
+  //delay(60000); //Wait for calibration of Gyro. 
   strip.setPixelColor(0,0,255,255);
   strip.show();
   Serial.println("Ready to Start!");
 }
 
 void loop() {
+  //get_data();
   
   if (!active_recording) {
     check_radio_activation();
@@ -167,11 +168,6 @@ void loop() {
     Serial.println(file_name);
     
     myFile = SD.open(file_name, FILE_WRITE);
-  
-    /*delay(200);
-    send_rf_cmd("RR");
-    delay(100);// Send confirmation Message.
-    send_rf_cmd("LR");*/ 
 
     Serial.println("Received file name!");
     
@@ -187,7 +183,7 @@ void loop() {
   while (active_recording) {
 
     myFile.print(get_data());
-    
+    //get_data();
     check_radio_activation();
     check_pin();
     
@@ -216,6 +212,7 @@ String get_data() {
         String extra = String(millis()) + "," + String(analogRead(A0)) + "," + String(analogRead(A1)) + "," + String(analogRead(A2)) + "," + String(analogRead(A6)) + "," + String(analogRead(A9)) + "," ;
         received_termite += extra;
         new_t1_data = true;
+        Serial.println(received_termite);
         return received_termite;
       }
       }
@@ -230,7 +227,6 @@ void write_data() {
    myFile = SD.open(file_name, FILE_WRITE);
    
     if (myFile) {
-      
       
       myFile.print(received);
       
@@ -274,16 +270,12 @@ void check_radio_activation() {
   radio.startListening();
   //Serial.println(radio.available());
   if (radio.available()) {
-    //Serial.println("Radio is available, I have no idea why.");
+    
     char incoming[3] = ""; 
 
     radio.read(&incoming, sizeof(incoming));
     Serial.println(incoming);
     
-    /*delay(200);
-    send_rf_cmd("RR");
-    delay(100);
-    send_rf_cmd("LR");*/
     
     if (incoming[0] == 'B' && incoming[1] == 'R') {
       
