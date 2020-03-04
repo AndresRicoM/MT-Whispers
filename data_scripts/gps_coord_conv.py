@@ -7,8 +7,8 @@ import os
 import math
 from interpolation import interpolate
 
-input_data_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/raw/Killington_250120/LM/filtered/'
-output_data_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/processed/modified/killington/gps_correction/'
+input_data_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/raw/Wachusetts_030320/LM/filtered/'
+output_data_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/processed/modified/wachusetts/gps_correction/'
 script_path = '/Users/AndresRico/Desktop/MT_Whispers/data_scripts/'
 
 data_labels = ['millis', 'latitude', 'coord1', 'longitude', 'coord2', 'capacitive', 'original_lat', 'original_lon', 'used_lat', 'used_lon']

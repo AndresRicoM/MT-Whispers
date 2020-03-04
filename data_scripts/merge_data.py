@@ -5,10 +5,10 @@ from interpolation import interpolate
 import os
 
 
-output_data = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/processed/merged/killington/interpolated/'
+output_data = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/processed/merged/wachusetts/interpolated/'
 
-rm_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/raw/Killington_250120/RM/'
-lm_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/processed/modified/killington/gps_correction/'
+rm_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/raw/Wachusetts_030320/RM/'
+lm_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/processed/modified/wachusetts/gps_correction/'
 
 data_labels = ['time', 'p1', 'p2', 'p3', 'p4', 'p5', 'termite', 'ax', 'ay', 'az', 'rx', 'ry', 'rz', 'roll', 'pitch', 'yaw',
                 'q1', 'q2', 'q3', 'q4' ,'calibration', 'temperature', 'humidity', 'pressure', 'flag_rm','lat', 'lacoord',
@@ -31,7 +31,7 @@ for filename in os.listdir(lm_path):
         rm_flag = np.zeros((rm.shape[0],1)) #Add Flag Columns to RM
         rm = np.append(rm, rm_flag, axis=1)
 
-        lm_flag = np.zeros((lm.shape[0],2)) #Add Flag Columns to LM
+        lm_flag = np.zeros((lm.shape[0],1)) #Add Flag Columns to LM
         lm = np.append(lm, lm_flag, axis=1)
 
         #rm = rm[0:5,:]
@@ -226,6 +226,8 @@ for filename in os.listdir(lm_path):
         """
 
         print('Saving file...')
+        print(fast_data.shape)
+        #print(data_labels.shape)
         fast_data = np.vstack((data_labels, fast_data)) #Add data labels to set for referencing and plotting.
         np.savetxt(output_data + filename , fast_data, delimiter = ',', fmt = '%s')
         print('Finished saving file: ' , filename)
