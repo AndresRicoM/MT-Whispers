@@ -18,11 +18,6 @@ def delete_zeros(data_set):
             clean_data = np.vstack((clean_data, data_set[rows,:]))
     return clean_data
 
-#test = np.indices((10,2))
-#print(test)
-#test = delete_zeros(test)
-#print(test)
-
 input_data_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/raw/Wachusetts_030320/LM/filtered/'
 output_data_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/processed/modified/wachusetts/gps_correction/'
 script_path = '/Users/AndresRico/Desktop/MT_Whispers/data_scripts/'
