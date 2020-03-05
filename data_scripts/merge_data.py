@@ -4,7 +4,6 @@ from progressbar import printProgressBar
 from interpolation import interpolate
 import os
 
-
 output_data = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/processed/merged/wachusetts/interpolated/'
 
 rm_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/raw/Wachusetts_030320/RM/'
@@ -14,8 +13,6 @@ data_labels = ['time', 'p1', 'p2', 'p3', 'p4', 'p5', 'termite', 'ax', 'ay', 'az'
                 'q1', 'q2', 'q3', 'q4' ,'calibration', 'temperature', 'humidity', 'pressure', 'flag_rm','lat', 'lacoord',
                 'lon', 'locoord', 'capacitive', 'o_lat', 'o_lon', 'used_lat', 'used_lon', 'altitude' , 'flag_lm']
 
-#rm_file = '2.csv'
-#lm_file = '2.csv'
 
 for filename in os.listdir(lm_path):
 
@@ -31,14 +28,40 @@ for filename in os.listdir(lm_path):
         rm_flag = np.zeros((rm.shape[0],1)) #Add Flag Columns to RM
         rm = np.append(rm, rm_flag, axis=1)
 
-        lm_flag = np.zeros((lm.shape[0],1)) #Add Flag Columns to LM
+        lm_flag = np.zeros((lm.shape[0],2)) #Altitude and Flags
         lm = np.append(lm, lm_flag, axis=1)
 
-        #rm = rm[0:5,:]
-        #lm = lm[0:5,:]
+        lm[:,-1] = lm[:,6]
+
+        lm = np.delete(lm, 6, 1)
+
+        print("Cleaning RM Data Set")
+        check_array = np.isnan(rm[:,6])
+        printProgressBar(0, check_array.shape[0], prefix = 'Cleaning RM...', suffix = 'Complete', length = 20)
+        for rows in range(0, check_array.shape[0]):
+            if check_array[rows] != True:
+                np.delete(rm[rows,:])
+            printProgressBar(rows, check_array.shape[0], prefix = 'Cleaning RM...', suffix = 'Complete', length = 20)
+
+        print()
+        print("Checking Pressure Values")
+        first = True
+        print(rm.shape[0])
+        printProgressBar(0, rm.shape[0], prefix = 'Checking Pressure...', suffix = 'Complete', length = 20)
+        for rows in range(0,rm.shape[0]):
+            if first:
+                clean_data = rm[rows,:]
+                first = False
+            elif rm[rows,-2] < .9999:
+                clean_data = np.vstack((clean_data,rm[rows,:]))
+            printProgressBar(rows, rm.shape[0], prefix = 'Checking Pressure...', suffix = 'Complete', length = 20)
+
+        rm = clean_data
+        print(rm.shape[0])
 
         fast_data = np.zeros((rm.shape[0], rm.shape[1] + lm.shape[1] - 1)) #Create new array to store new data set.
 
+        print()
         print('Filling in complete fast data...')
         printProgressBar(0, rm.shape[0], prefix = 'Filling in fast data...', suffix = 'Complete', length = 20)
 
@@ -64,169 +87,8 @@ for filename in os.listdir(lm_path):
                 fast_data[rows,25:32] = fast_data[rows-1,-11:-4]
             printProgressBar(rows, fast_data.shape[0], prefix = 'Filling in zeros...', suffix = 'Complete', length = 20)
 
-        """
-        print('Interpolating Latitude...')
-        printProgressBar(0, fast_data.shape[0], prefix = 'Interpolating Latitude...', suffix = 'Complete', length = 20)
-        to_check = 0
-        for rows in range(0, fast_data.shape[0]): #Interpolates
-
-            interpolated = False
-            spaces = 0
-
-            if rows == to_check:
-
-                if rows == fast_data.shape[0] - 1: #Exit loop when reaching last value.
-                    break
-
-                #Check if fast value is the same as next value.
-                if fast_data[rows,-11] == fast_data[rows + 1, -11]:
-                    #fast_data[rows, -2] = 1
-                    spaces = spaces + 1 #Begin looking for amount of values that are the same and store in spaces.
-
-                    blank = False
-                    while not blank:
-                        if rows + spaces + 1 == fast_data.shape[0]:
-                            break
-                        if fast_data[rows, -11] == fast_data[rows + spaces + 1, -11]:
-                            spaces = spaces + 1
-                        else:
-                            blank = True
-                            interpolated = True
-
-                if interpolated:
-
-                    interpolated = False
-                    interpolator_lat = np.zeros((spaces + 1,1))
-
-                    interpolator_lat = interpolate(fast_data[rows, -11], fast_data[rows + spaces + 1, -11], spaces + 1)
-
-                    for coords in range(0,interpolator_lat.shape[0]):
-                        fast_data[rows + coords, -11] = interpolator_lat[coords, 0]
-
-                    to_check = to_check + spaces + 1
-
-                else:
-                    to_check = to_check + 1
-            printProgressBar(rows, fast_data.shape[0], prefix = 'Interpolating Latitude...', suffix = 'Complete', length = 20)
-
-        print('Interpolating Longitude...')
-        printProgressBar(0, fast_data.shape[0], prefix = 'Interpolating Longitude...', suffix = 'Complete', length = 20)
-        to_check = 0
-        for rows in range(0, fast_data.shape[0]): #Interpolates
-
-            interpolated = False
-            spaces = 0
-
-            if rows == to_check:
-
-                if rows == fast_data.shape[0] - 1: #Exit loop when reaching last value.
-                    break
-
-                #Check if fast value is the same as next value.
-                if fast_data[rows,-9] == fast_data[rows + 1, -9]:
-                    #fast_data[rows, -2] = 1
-                    spaces = spaces + 1 #Begin looking for amount of values that are the same and store in spaces.
-
-                    blank = False
-                    while not blank:
-                        if rows + spaces + 1 == fast_data.shape[0]:
-                            break
-                        if fast_data[rows, -9] == fast_data[rows + spaces + 1, -9]:
-                            spaces = spaces + 1
-                        else:
-                            blank = True
-                            interpolated = True
-
-                if interpolated:
-
-                    interpolated = False
-                    interpolator_lon = np.zeros((spaces + 1,1))
-
-                    interpolator_lon = interpolate(fast_data[rows, -9], fast_data[rows + spaces + 1, -9], spaces + 1)
-
-                    for coords in range(0,interpolator_lon.shape[0]):
-                        fast_data[rows + coords, -9] = interpolator_lon[coords, 0]
-
-                    to_check = to_check + spaces + 1
-
-                else:
-                    to_check = to_check + 1
-
-            printProgressBar(rows, fast_data.shape[0], prefix = 'Interpolating Longitude...', suffix = 'Complete', length = 20)
-
-        print('Rounding decimals...')
-        printProgressBar(0, fast_data.shape[0], prefix = 'Rounding...', suffix = 'Complete', length = 20)
-        for rows in range(0, fast_data.shape[0]):
-            fast_data[rows, -11] = round(fast_data[rows, -11], 4)
-            fast_data[rows, -9] = round(fast_data[rows, -9], 4)
-            printProgressBar(rows, fast_data.shape[0], prefix = 'Rounding...', suffix = 'Complete', length = 20)
-        """
-
-        """
-        for rows in range(0, fast_data.shape[0]): #Interpolates latitudes
-
-            interpolated = False
-            spaces = 0
-
-            if rows == fast_data.shape[0] - 1: #Exit loop when reaching last value.
-                break
-
-            #Check if fast value is the same as next value.
-            if fast_data[rows,-11] == 0:
-                fast_data[rows,-6] = fast_data[rows-1, -6]
-                spaces = spaces + 1 #Begin looking for amount of values that are the same and store in spaces.
-                blank = False
-                while not blank:
-                    #print(rows)
-                    if fast_data[rows + spaces, -11] == 0:
-                        spaces = spaces + 1
-                    else:
-                        blank = True
-                        interpolated = True
-
-            if interpolated:
-                interpolated = False
-                interpolator_lat = np.zeros((spaces + 2,1))
-
-                interpolator_lat = interpolate(fast_data[rows-1, -11], fast_data[rows + spaces, -11], spaces + 2)
-                print(interpolator_lat)
-                for coords in range(0,interpolator_lat.shape[0]):
-                    if coords != interpolator_lat.shape[0] - 1 and coords != 0:
-                        fast_data[rows + coords - 1, -11] = interpolator_lat[coords, 0]
-
-            interpolated = False
-            spaces = 0
-
-            if rows == fast_data.shape[0] - 1: #Exit loop when reaching last value.
-                break
-
-            #Check if fast value is the same as next value.
-            if fast_data[rows,-9] == 0:
-                fast_data[rows,-5] = fast_data[rows-1, -5]
-                spaces = spaces + 1 #Begin looking for amount of values that are the same and store in spaces.
-                blank = False
-                while not blank:
-                    if fast_data[rows + spaces, -9] == 0:
-                        spaces = spaces + 1
-                    else:
-                        blank = True
-                        interpolated = True
-
-            if interpolated:
-                interpolated = False
-                interpolator_lat = np.zeros((spaces + 2,1))
-
-                interpolator_lat = interpolate(fast_data[rows-1, -9], fast_data[rows + spaces, -9], spaces + 2)
-                print(interpolator_lat)
-                for coords in range(0,interpolator_lat.shape[0]):
-                    if coords != interpolator_lat.shape[0] - 1 and coords != 0:
-                        fast_data[rows + coords - 1, -9] = interpolator_lat[coords, 0]
-
-            printProgressBar(rows, fast_data.shape[0], prefix = 'Filling in missing GPS and Capacitance...', suffix = 'Complete', length = 20)
-        """
 
         print('Saving file...')
-        print(fast_data.shape)
         #print(data_labels.shape)
         fast_data = np.vstack((data_labels, fast_data)) #Add data labels to set for referencing and plotting.
         np.savetxt(output_data + filename , fast_data, delimiter = ',', fmt = '%s')

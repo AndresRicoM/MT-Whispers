@@ -7,6 +7,22 @@ import os
 import math
 from interpolation import interpolate
 
+def delete_zeros(data_set):
+    first = True
+    for rows in range(0, data_set.shape[0]):
+        if first:
+            clean_data = data_set[rows,:]
+            first = False
+        elif (data_set[rows, 1] < -1) or (data_set[rows, 1] > 1) and (data_set[rows, 3]) < -1 or (data_set[rows, 3] > 1):
+            #print(data_set[rows, 3])
+            clean_data = np.vstack((clean_data, data_set[rows,:]))
+    return clean_data
+
+#test = np.indices((10,2))
+#print(test)
+#test = delete_zeros(test)
+#print(test)
+
 input_data_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/raw/Wachusetts_030320/LM/filtered/'
 output_data_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/processed/modified/wachusetts/gps_correction/'
 script_path = '/Users/AndresRico/Desktop/MT_Whispers/data_scripts/'
@@ -18,6 +34,7 @@ for filename in os.listdir(input_data_path):
     if filename != '.DS_Store':
 
         current_data = np.genfromtxt(input_data_path + filename, delimiter = ',',  invalid_raise=False) #,  dtype='str')
+        current_data = delete_zeros(current_data)
         original = np.zeros((current_data.shape[0], 4))
         #original_lon = np.zeros((current_data.shape[0], 1))
         current_data = np.hstack((current_data, original))
