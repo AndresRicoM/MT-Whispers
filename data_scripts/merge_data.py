@@ -4,15 +4,14 @@ from progressbar import printProgressBar
 from interpolation import interpolate
 import os
 
-output_data = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/processed/merged/wachusetts/interpolated/'
+output_data = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/processed/merged/killington_080320/interpolated/'
 
-rm_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/raw/Wachusetts_030320/RM/'
-lm_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/processed/modified/wachusetts/gps_correction/'
+rm_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/raw/killington_080320/RM/'
+lm_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/processed/modified/killington_080320/gps_correction/'
 
 data_labels = ['time', 'p1', 'p2', 'p3', 'p4', 'p5', 'termite', 'ax', 'ay', 'az', 'rx', 'ry', 'rz', 'roll', 'pitch', 'yaw',
                 'q1', 'q2', 'q3', 'q4' ,'calibration', 'temperature', 'humidity', 'pressure', 'flag_rm','lat', 'lacoord',
                 'lon', 'locoord', 'capacitive', 'o_lat', 'o_lon', 'used_lat', 'used_lon', 'altitude' , 'flag_lm']
-
 
 for filename in os.listdir(lm_path):
 
@@ -31,9 +30,11 @@ for filename in os.listdir(lm_path):
         lm_flag = np.zeros((lm.shape[0],2)) #Altitude and Flags
         lm = np.append(lm, lm_flag, axis=1)
 
-        lm[:,-1] = lm[:,6]
+        lm[:,-1] = lm[:,7]
+        lm[:,-2] = lm[:,6]
 
         lm = np.delete(lm, 6, 1)
+        lm = np.delete(lm, 7, 1)
 
         print("Cleaning RM Data Set")
         check_array = np.isnan(rm[:,6])
@@ -42,11 +43,22 @@ for filename in os.listdir(lm_path):
             if check_array[rows] != True:
                 np.delete(rm[rows,:])
             printProgressBar(rows, check_array.shape[0], prefix = 'Cleaning RM...', suffix = 'Complete', length = 20)
-
         print()
+
+        print("Alligning Calibration Data")
+        first = True
+        printProgressBar(0, rm.shape[0], prefix = 'Calibration...', suffix = 'Complete', length = 20)
+        for rows in range(0, rm.shape[0]):
+            if first:
+                calib_data = rm[rows,:]
+                first = False
+            elif rm[rows,20] == True:
+                calib_data = np.vstack((calib_data,rm[rows,:]))
+            printProgressBar(rows, rm.shape[0], prefix = 'Cleaning RM...', suffix = 'Complete', length = 20)
+        print()
+
         print("Checking Pressure Values")
         first = True
-        print(rm.shape[0])
         printProgressBar(0, rm.shape[0], prefix = 'Checking Pressure...', suffix = 'Complete', length = 20)
         for rows in range(0,rm.shape[0]):
             if first:
@@ -80,6 +92,7 @@ for filename in os.listdir(lm_path):
             printProgressBar(rows, lm.shape[0], prefix = 'Looking for closest GPS stamps...', suffix = 'Complete', length = 20)
         #print(fast_data)
 
+        print()
         print('Adding LM...')
         printProgressBar(0, fast_data.shape[0], prefix = 'Filling in LM...', suffix = 'Complete', length = 20)
         for rows in range (0, fast_data.shape[0]):

@@ -18,11 +18,11 @@ def delete_zeros(data_set):
             clean_data = np.vstack((clean_data, data_set[rows,:]))
     return clean_data
 
-input_data_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/raw/Wachusetts_030320/LM/filtered/'
-output_data_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/processed/modified/wachusetts/gps_correction/'
+input_data_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/raw/Killington_080320/LM/Filtered/'
+output_data_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/processed/modified/killington_080320/gps_correction/'
 script_path = '/Users/AndresRico/Desktop/MT_Whispers/data_scripts/'
 
-data_labels = ['millis', 'latitude', 'coord1', 'longitude', 'coord2', 'capacitive', 'original_lat', 'original_lon', 'used_lat', 'used_lon']
+data_labels = ['millis', 'latitude', 'coord1', 'longitude', 'coord2', 'altitude','capacitive','flag', 'original_lat', 'original_lon', 'used_lat', 'used_lon']
 
 for filename in os.listdir(input_data_path):
 
@@ -132,8 +132,8 @@ for filename in os.listdir(input_data_path):
             current_data[rows,1] = dd_lat
             current_data[rows,3] = dd_lon
 
-
-            #current_data = np.vstack((data_labels, current_data)) #Add data labels to set for referencing and plotting.
+        print(current_data.shape)
+        #current_data = np.vstack((data_labels, current_data)) #Add data labels to set for referencing and plotting.
         np.savetxt(output_data_path + filename , current_data, delimiter = ',', fmt = '%s')
         print('Saved ', filename)
 
