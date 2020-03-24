@@ -18,8 +18,8 @@ def delete_zeros(data_set):
             clean_data = np.vstack((clean_data, data_set[rows,:]))
     return clean_data
 
-input_data_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/raw/Killington_080320/LM/Filtered/'
-output_data_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/processed/modified/killington_080320/gps_correction/'
+input_data_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/raw/metepec_230320/LM/Filtered/'
+output_data_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/processed/modified/metepec_230320/gps_correction/'
 script_path = '/Users/AndresRico/Desktop/MT_Whispers/data_scripts/'
 
 data_labels = ['millis', 'latitude', 'coord1', 'longitude', 'coord2', 'altitude','capacitive','flag', 'original_lat', 'original_lon', 'used_lat', 'used_lon']

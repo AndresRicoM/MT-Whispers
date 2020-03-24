@@ -4,10 +4,10 @@ from progressbar import printProgressBar
 from interpolation import interpolate
 import os
 
-output_data = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/processed/merged/killington_080320/interpolated/'
+output_data = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/processed/merged/metepec_230320/interpolated/'
 
-rm_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/raw/killington_080320/RM/'
-lm_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/processed/modified/killington_080320/gps_correction/'
+rm_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/raw/metepec_230320/RM/'
+lm_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/processed/modified/metepec_230320/gps_correction/'
 
 data_labels = ['time', 'p1', 'p2', 'p3', 'p4', 'p5', 'termite', 'ax', 'ay', 'az', 'rx', 'ry', 'rz', 'roll', 'pitch', 'yaw',
                 'q1', 'q2', 'q3', 'q4' ,'calibration', 'temperature', 'humidity', 'pressure', 'flag_rm','lat', 'lacoord',
