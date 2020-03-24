@@ -2,7 +2,7 @@ import os
 
 #Assign Path Names
 print('Type Name of New Data Set:')
-data_name = input() #'test_000000'
+data_name = input()
 
 rm_raw_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/raw/' + data_name + '/RM'
 lm_raw_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/raw/' + data_name + '/LM'

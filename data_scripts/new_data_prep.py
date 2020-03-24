@@ -1,8 +1,8 @@
 # Main Processing Script for Collected Data.
 import numpy as np
 import os
-import gps_coord_conv
-import merge_data
+from gps_coord_conv import *
+from merge_data import *
 
 print('Input Data Set To Process:')
 to_process = input()
@@ -11,6 +11,18 @@ rm_raw_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/raw/' + to_p
 lm_raw_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/raw/' + to_process + '/LM/'
 gps_conv_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/processed/modified/' + to_process + '/gps_correction/'
 merged_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/processed/merged/' + to_process + '/interpolated/'
+
+print('Making New Directories...')
+try:
+    os.makedirs(rm_raw_path)
+    os.makedirs(lm_raw_path)
+    os.makedirs(gps_conv_path)
+    os.makedirs(merged_path)
+    print('Finished Making new Directories!')
+except:
+    print('Direcotries already exist!')
+
+input('Load Files to Raw Folders... Press ENTER when done loading')
 
 #Convert GPS
 print('Starting GPS conversion...')
