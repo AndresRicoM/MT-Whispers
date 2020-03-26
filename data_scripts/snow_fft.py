@@ -3,50 +3,75 @@ import matplotlib
 import matplotlib.pyplot as plt
 import seaborn as sns; sns.set()  # for plot styling
 from matplotlib import gridspec
+import scipy.fftpack
+from scipy import signal
+from scipy.interpolate import interp1d
 
 print('Importing Data...')
 
-rm_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/raw/Killington_250120/RM'
+data_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/processed/merged/fft_250320/interpolated/'
 #lm_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/raw/Killington_250120/LM'
 
-rm_file = '/4.csv'
-#lm_file = '/4.csv'
+data_file = '884.csv'#'910.csv'#'301.csv'#'837.csv'
 
-rm = np.genfromtxt(rm_path + rm_file, delimiter = ',', usecols=np.arange(0,24), invalid_raise=False)
-#lm = np.genfromtxt(lm_path + lm_file, delimiter = ',')
+window = 300
 
+main_data = np.genfromtxt(data_path + data_file, delimiter = ',', usecols=np.arange(0,36), invalid_raise=False)
+main_data = main_data[:window,:]
 print('Data Imported!')
 
-print('Calculating FFT for Piezo and Accel Data')
+synth_time = np.linspace(0,main_data.shape[0], main_data.shape[0])
 
-p1 = np.fft.rfft(rm[:,1])
-p2 = np.fft.rfft(rm[:,2])
-p3 = np.fft.rfft(rm[:,3])
-p4 = np.fft.rfft(rm[:,4])
-p5 = np.fft.rfft(rm[:,5])
+inter = interp1d(main_data[:,0].astype(int), main_data[:,1].astype(int), kind='cubic')
+new_x = np.linspace(0 ,main_data.shape[0], main_data.shape[0] * 2)
+high_freq = inter(new_x)
 
-print('Getting frequencies...')
+plt.plot(new_x[:300], high_freq[:300], '-', main_data[:300,0] ,main_data[:300,1], '--')
+plt.show()
 
-sum = 0
-for rows in range(rm.shape[0]):
-    if rows != rm.shape[0] - 1:
-        delta = rm[rows + 1,0] - rm[rows,0]
-        #print(delta)
-        sum = sum + delta
+print(' /////////////////////// Data Set Information ///////////////////////')
 
+#Time Domain Variables.
+N = high_freq.shape[0] # Number of Samples
+T = main_data[main_data.shape[0]-1, 0] / 1000 # Frame Size
+dT = T/N #Delta T
+sampling_rate = 1/dT #Fs or Sampling Frequency
 
-average_delta = (sum / rm.shape[0] - 1)
-average_freq = 1 / (average_delta * .001)
+#Frequency Domain Variables.
+df = sampling_rate/N #Frequecy Resolution (frequency bin).
+fmax = sampling_rate/2 #Bandwith or Max Freq
+spect = N/2 #Spectral lines.
 
-print('Avergae collection delta: ' , average_delta * .001 , ' Seconds')
-print('Avergae frequency of collection: ' , average_freq, ' Hertz')
+print('Number of Saples (N): ', N)
+print('Frame Size (Total Collection Time) (T): ', T, ' seconds')
+print('dT: ', dT)
+print('Sampling rate (freq): ', sampling_rate, ' Hz')
+print('Frequency resolution: ', df, ' Hz')
 
+print(' /////////////////////////////////////////////////////////////////////')
 
+print('Calculating FFT for Piezo and Accel Data...')
 
 """
-ax =
-ay =
-az =
+p1 = np.fft.rfft(main_data[:,1])
+p2 = np.fft.rfft(main_data[:,2])
+p3 = np.fft.rfft(main_data[:,3])
+p4 = np.fft.rfft(main_data[:,4])
+p5 = np.fft.rfft(main_data[:,5])
 """
-print(p1)
-print('Finished Calculating!')
+#test = np.linspace(0,10,10)
+#print(scipy.fftpack.fft(test))
+p1 = scipy.signal.detrend(high_freq.astype(int))
+p1 = scipy.fftpack.fft(high_freq.astype(int))
+
+print('Finished Creating FFTs!')
+
+freq_vect = np.linspace(0.0, fmax, spect)
+
+#plt.plot(freq_vect, (1/spect)*np.abs(p1[:N//2]))
+plt.plot(freq_vect, (1/spect)*np.abs(p1[:N//2]))
+
+#print((1/spect)*np.abs(p1[:N//2]))
+#plt.plot(freq_vect, (1/spect)*np.abs(p1))
+
+plt.show()
