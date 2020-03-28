@@ -9,24 +9,29 @@ from scipy.interpolate import interp1d
 
 print('Importing Data...')
 
-data_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/processed/merged/fft_250320/interpolated/'
+data_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/processed/merged/killington/interpolated/'
 #lm_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/raw/Killington_250120/LM'
 
-data_file = '884.csv'#'910.csv'#'301.csv'#'837.csv'
+data_file = '2.csv' #'910.csv'#'301.csv'#
 
-window = 300
+#window = 3500
 
 main_data = np.genfromtxt(data_path + data_file, delimiter = ',', usecols=np.arange(0,36), invalid_raise=False)
-main_data = main_data[:window,:]
+synth_time = np.linspace(0,main_data.shape[0], main_data.shape[0])
+plt.plot(synth_time, main_data[:,1])
+plt.show()
+
+#main_data = main_data[35000:38500,:]
 print('Data Imported!')
 
 synth_time = np.linspace(0,main_data.shape[0], main_data.shape[0])
 
 inter = interp1d(main_data[:,0].astype(int), main_data[:,1].astype(int), kind='cubic')
-new_x = np.linspace(0 ,main_data.shape[0], main_data.shape[0] * 2)
+
+new_x = np.linspace(0 ,main_data.shape[0], main_data.shape[0])
 high_freq = inter(new_x)
 
-plt.plot(new_x[:300], high_freq[:300], '-', main_data[:300,0] ,main_data[:300,1], '--')
+plt.plot(new_x[:], high_freq[:], '-', synth_time ,main_data[:,1], '--')
 plt.show()
 
 print(' /////////////////////// Data Set Information ///////////////////////')
@@ -61,7 +66,7 @@ p5 = np.fft.rfft(main_data[:,5])
 """
 #test = np.linspace(0,10,10)
 #print(scipy.fftpack.fft(test))
-p1 = scipy.signal.detrend(high_freq.astype(int))
+#p1 = scipy.signal.detrend(high_freq.astype(int))
 p1 = scipy.fftpack.fft(high_freq.astype(int))
 
 print('Finished Creating FFTs!')
