@@ -9,10 +9,11 @@ from scipy.interpolate import interp1d
 
 print('Importing Data...')
 
-data_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/processed/merged/killington/interpolated/'
+data_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/processed/merged/metepec_020420/interpolated/'
 #lm_path = '/Users/AndresRico/Desktop/MT-Whispers/collected_data/raw/Killington_250120/LM'
 
-data_file = '2.csv' #'910.csv'#'301.csv'#
+print('Type in file you want to analyze...')
+data_file = input() #'696.csv' #'910.csv'#'301.csv'#
 
 #window = 3500
 
