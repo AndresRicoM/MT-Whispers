@@ -110,6 +110,11 @@ if __name__ == "__main__":
     # - im: the matplotlib.image.AxesImage instance representing the data in the plot
     plt.show()
 
+    gs = gridspec.GridSpec(5,1)
+    fig = plt.figure()
+    for sensors in range(1,6):
+        ax = fig.add_subplot(gs[sensors-1])
+        ax.specgram(main_data[:,sensors], NFFT=NFFT, Fs=sampling_rate, noverlap=900)
 
-    plt.specgram(main_data[:,sensor_num], NFFT=NFFT, Fs=sampling_rate, noverlap=900)
+    #plt.specgram(main_data[:,sensor_num], NFFT=NFFT, Fs=sampling_rate, noverlap=900)
     plt.show()
