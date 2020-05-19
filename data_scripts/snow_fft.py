@@ -29,7 +29,7 @@ def open_new(ret_path):
 
 if __name__ == "__main__":
 
-    plt.style.use('dark_background') #Style Plots With Dark Theme
+    #plt.style.use('dark_background') #Style Plots With Dark Theme
 
     print('Ready To Begin Importing Data...')
 
