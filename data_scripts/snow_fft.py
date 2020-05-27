@@ -6,6 +6,7 @@ from matplotlib import gridspec
 import scipy.fftpack
 from scipy import signal
 from scipy.interpolate import interp1d
+from scipy.stats import pearsonr
 
 
 class file_select: #Class for selecting new file.
@@ -38,11 +39,11 @@ if __name__ == "__main__":
 
     try:
         print('Importing Data...')
-        main_data = open_new('/Users/AndresRico/Desktop/MT-Whispers/collected_data/processed/merged/' + name.folder + '/interpolated/' + name.name)
+        main_data = open_new('/Users/AndresRico/Desktop/working/MT-Whispers/collected_data/processed/merged/' + name.folder + '/interpolated/' + name.name)
         print('Data Was Succesfully Imported!')
     except:
         print('Unable to Import Data!')
-        main_data = open_new('/Users/AndresRico/Desktop/MT-Whispers/collected_data/processed/merged/' + name.folder + '/interpolated/' + name.name)
+        main_data = open_new('/Users/AndresRico/Desktop/working/MT-Whispers/collected_data/processed/merged/' + name.folder + '/interpolated/' + name.name)
 
     sensor_num = 3
     #main_data = main_data[0:1000, :]
@@ -69,6 +70,8 @@ if __name__ == "__main__":
     int.plot(new_x[:], high_freq[:])
     plt.show()
 
+    #print('Correlation:')
+    #print(pearsonr(main_data[:,1].astype(float), main_data[:,7].astype(float)))
 
     print(' /////////////////////// Data Set Information ///////////////////////')
     #Time Domain Variables.
@@ -112,9 +115,29 @@ if __name__ == "__main__":
 
     gs = gridspec.GridSpec(5,1)
     fig = plt.figure()
+
+    plt.title('System Feedback Signal Spectogram', fontsize=30)
+    #plt.ylabel('Normalized Fusion Variables', fontsize=25)
+    #plt.xlabel('Time', fontsize=25)
+    #plt.xticks([])
+    plt.yticks([])
+    plt.ylabel(r'Frequency (Hz)', size =20)
+    plt.xlabel(r'Elapsed Experiment Time Percentage', size =20)
+
+
+
+    #dot_size = 16
+
     for sensors in range(1,6):
         ax = fig.add_subplot(gs[sensors-1])
         ax.specgram(main_data[:,sensors], NFFT=NFFT, Fs=sampling_rate, noverlap=900)
+        ax.set_ylabel(r'P' + str(sensors), size =15)
+        #ax.set_xlabel(r'Time', size =15)
+        ax.yaxis.set_label_position("right")
+        ax.yaxis.tick_right()
+        #ax.set_yticklabels([])
+        ax.set_xticklabels([])
 
     #plt.specgram(main_data[:,sensor_num], NFFT=NFFT, Fs=sampling_rate, noverlap=900)
+
     plt.show()
