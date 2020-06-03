@@ -125,7 +125,6 @@ if __name__ == "__main__":
     plt.xlabel(r'Elapsed Experiment Time Percentage', size =20)
 
 
-
     #dot_size = 16
 
     for sensors in range(1,6):
