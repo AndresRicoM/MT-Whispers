@@ -59,7 +59,7 @@ def animatescroll(i):
         plt.plot(x_vals, pressure_vals)
         plt.ylabel(r'Analog Voltage', size =12)
         plt.xlabel(r'Time', size =12)
-        plt.title(r'Piezoelectric Readings', size =12)
+        plt.title(r'Sensor Output', size =12)
     else:
         x_vals.append(next(index))
         y_vals.append(data[next(index),23])
@@ -67,7 +67,7 @@ def animatescroll(i):
         plt.plot(x_vals, y_vals)
         plt.ylabel(r'Analog Voltage', size =12)
         plt.xlabel(r'Time', size =12)
-        plt.title(r'Piezoelectric Readings', size =12)
+        plt.title(r'Sensor Output', size =12)
 
 def animatestack(i):
     x_vals.append(next(index))
@@ -77,7 +77,7 @@ def animatestack(i):
     plt.plot(x_vals, x_vals)
     plt.ylabel(r'Analog Voltage', size =12)
     plt.xlabel(r'Time', size =12)
-    plt.title(r'Piezoelectric Readings', size =12)
+    plt.title(r'Sensor Output', size =12)
 
 def piezoanimatescroll(i):
     if len(x_vals) > 50:
@@ -94,14 +94,15 @@ def piezoanimatescroll(i):
         p4.remove(p4[0])
         p5.remove(p5[0])
         plt.cla()
-        plt.plot(x_vals, p1)
-        plt.plot(x_vals, p2)
-        plt.plot(x_vals, p3)
-        plt.plot(x_vals, p4)
-        plt.plot(x_vals, p5)
+        plt.plot(x_vals, p1, label = 'P1')
+        plt.plot(x_vals, p2, label = 'P2')
+        plt.plot(x_vals, p3, label = 'P3')
+        plt.plot(x_vals, p4, label = 'P4')
+        plt.plot(x_vals, p5, label = 'P5')
+        plt.legend(loc = 'upper right')
         plt.ylabel(r'Analog Voltage', size =12)
         plt.xlabel(r'Time', size =12)
-        plt.title(r'Piezoelectric Readings', size =12)
+        plt.title(r'Sensor Output', size =12)
     else:
         x_vals.append(next(index))
         p1.append(data[next(index), 1])
@@ -110,14 +111,15 @@ def piezoanimatescroll(i):
         p4.append(data[next(index), 4])
         p5.append(data[next(index), 5])
         plt.cla()
-        plt.plot(x_vals, p1)
-        plt.plot(x_vals, p2)
-        plt.plot(x_vals, p3)
-        plt.plot(x_vals, p4)
-        plt.plot(x_vals, p5)
+        plt.plot(x_vals, p1, label = 'P1')
+        plt.plot(x_vals, p2, label = 'P2')
+        plt.plot(x_vals, p3, label = 'P3')
+        plt.plot(x_vals, p4, label = 'P4')
+        plt.plot(x_vals, p5, label = 'P5')
+        plt.legend(loc = 'upper right')
         plt.ylabel(r'Analog Voltage', size =12)
         plt.xlabel(r'Time', size =12)
-        plt.title(r'Piezoelectric Readings', size =12)
+        plt.title(r'Sensor Output', size =12)
 
 
 def piezoanimatestack(i):
@@ -128,14 +130,15 @@ def piezoanimatestack(i):
     p4.append(data[next(index), 4])
     p5.append(data[next(index), 5])
     plt.cla()
-    plt.plot(x_vals, p1)
-    plt.plot(x_vals, p2)
-    plt.plot(x_vals, p3)
-    plt.plot(x_vals, p4)
-    plt.plot(x_vals, p5)
+    plt.plot(x_vals, p1, label = 'P1')
+    plt.plot(x_vals, p2, label = 'P2')
+    plt.plot(x_vals, p3, label = 'P3')
+    plt.plot(x_vals, p4, label = 'P4')
+    plt.plot(x_vals, p5, label = 'P5')
+    plt.legend(loc = 'upper right')
     plt.ylabel(r'Analog Voltage', size =12)
     plt.xlabel(r'Time', size =12)
-    plt.title(r'Piezoelectric Readings', size =12)
+    plt.title(r'Sensor Output', size =12)
 
 def animategrid(i):
     x_vals.append(next(index))
@@ -196,8 +199,7 @@ def animatespect(i):
     plt.xlabel(r'Time', size =12)
     plt.title(r'Feedback Spectogram', size =12)
 
-
-ani = FuncAnimation(plt.gcf(), piezoanimatescroll, interval=10)
+ani = FuncAnimation(plt.gcf(), animatespect, interval=10)
 
 plt.plot(x_vals, y_vals)
 plt.tight_layout()
