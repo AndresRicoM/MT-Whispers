@@ -17,11 +17,25 @@ input_data = np.genfromtxt(path, delimiter = ',', dtype='str',  invalid_raise=Fa
 latitudes = input_data[:,2].astype(np.float)
 longitudes= input_data[:,4].astype(np.float)
 
-latitudes = latitudes / 100
-#longitudes = longitudes / 10
+#Convert coordinates
+
+for rows in range(latitudes.shape[0]):
+
+    lat = latitudes[rows] * .01
+    lat_deg = math.floor(lat)
+    lat_min = ((lat - lat_deg) * 100) / 60
+    dd_lat = lat_deg + lat_min
+
+    lon = longitudes[rows] * .01
+    lon_deg = math.floor(lon)
+    lon_min = ((lon - lon_deg) * 100) / 60
+    dd_lon =  (lon_deg + lon_min)
+
+    latitudes[rows] = dd_lat
+    longitudes[rows] = dd_lon
 
 input_data[:,2] = latitudes[:]
-#input_data[:,4] = longitudes[:]
+input_data[:,4] = longitudes[:]
 
 print(latitudes.shape)
 
